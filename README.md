@@ -69,3 +69,8 @@ transitive dependencies, and removes all unreferenced schemas.
 
 - URL input with streaming download via `reqwest` for memory-efficient
   processing of remote specs
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
+for details.
