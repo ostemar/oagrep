@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cargo build:*)",
+      "Bash(cargo test:*)",
+      "Bash(cargo run:*)",
+      "Bash('{\"\"openapi\"\":\"\"3.0.0\"\",\"\"paths\"\":{\"\"/api/users\"\":{\"\"get\"\":{}},\"\"/api/orders\"\":{\"\"get\"\":{}}}}')",
+      "Bash(cargo fmt:*)",
+      "Bash(cargo clippy:*)"
+    ]
+  }
+}
