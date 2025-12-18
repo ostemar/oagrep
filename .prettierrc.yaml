@@ -1,0 +1,8 @@
+overrides:
+  - files: "*.md" # You can also use "*.mdx" or other markdown flavors
+    options:
+      printWidth: 80
+      proseWrap: "always"
+      # You can even set other markdown-specific options here
+      # For example, to keep list item spacing consistent:
+      # listItemSpacing: "consistent" 

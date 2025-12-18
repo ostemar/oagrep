@@ -1,10 +1,12 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with
+code in this repository.
 
 ## Project Overview
 
-`oagrep` - A Rust CLI tool for filtering OpenAPI specifications (currently in early development).
+`oagrep` - A Rust CLI tool for filtering OpenAPI specifications (currently in
+early development).
 
 ## Build Commands
 
@@ -38,3 +40,8 @@ cargo clippy
 
 - `src/main.rs` - Application entry point
 - `Cargo.toml` - Project manifest and dependencies
+
+## Other Notes
+
+When updating markdown files, ensure proper formatting and adherence to the
+prettier config.
