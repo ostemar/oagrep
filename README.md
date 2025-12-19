@@ -12,10 +12,10 @@ only the endpoints you need.
 ## Usage
 
 ```
-oagrep [OPTIONS] [FILE]
+oagrep [OPTIONS] [INPUT]
 
 Arguments:
-  [FILE]  OpenAPI JSON file (reads from stdin if not provided)
+  [INPUT]  OpenAPI JSON file or URL (reads from stdin if not provided)
 
 Options:
   -p <PATTERN>          Path pattern filter (e.g., /api/v1/users/*)
@@ -32,6 +32,9 @@ Options:
 ```bash
 # Filter to specific path pattern
 oagrep -p "/api/v1/users/*" api.json
+
+# Filter remote spec by URL
+oagrep -p "/activity/**" https://tripletex.no/v2/openapi.json
 
 # Pipe through with filter
 cat api.json | oagrep -p "/orders/*"
@@ -61,14 +64,10 @@ transitive dependencies, and removes all unreferenced schemas.
 ## Technical Details
 
 - Uses `serde` / `serde_json` for efficient JSON parsing
+- Uses `reqwest` with blocking client for URL fetching
 - Supports stdin/stdout for easy pipeline integration
 - Automatic schema pruning with transitive dependency resolution
 - Handles circular schema references
-
-## Roadmap
-
-- URL input with streaming download via `reqwest` for memory-efficient
-  processing of remote specs
 
 ## License
 

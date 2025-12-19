@@ -4,6 +4,7 @@ use std::collections::{HashSet, VecDeque};
 use std::fs;
 use std::io::{self, Read, Write};
 use std::path::PathBuf;
+use std::time::Duration;
 
 #[derive(Parser)]
 #[command(name = "oagrep")]
@@ -37,8 +38,8 @@ struct Cli {
     #[arg(short = 'm', long = "minimal")]
     minimal: bool,
 
-    /// OpenAPI JSON file (reads from stdin if not provided)
-    file: Option<PathBuf>,
+    /// OpenAPI JSON file or URL (reads from stdin if not provided)
+    input: Option<String>,
 }
 
 fn main() {
@@ -48,11 +49,28 @@ fn main() {
     }
 }
 
+fn is_url(s: &str) -> bool {
+    s.starts_with("http://") || s.starts_with("https://")
+}
+
+fn fetch_url(url: &str) -> Result<String, Box<dyn std::error::Error>> {
+    let client = reqwest::blocking::Client::builder()
+        .timeout(Duration::from_secs(30))
+        .build()?;
+
+    let response = client.get(url).send()?;
+    if !response.status().is_success() {
+        return Err(format!("HTTP {}", response.status()).into());
+    }
+    Ok(response.text()?)
+}
+
 fn run() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
 
     // Read input
-    let input = match &cli.file {
+    let input = match &cli.input {
+        Some(s) if is_url(s) => fetch_url(s)?,
         Some(path) => fs::read_to_string(path)?,
         None => {
             let mut buf = String::new();
@@ -543,5 +561,31 @@ mod tests {
         assert!(schemas.contains_key("Address"));
         assert!(!schemas.contains_key("Order"));
         assert!(!schemas.contains_key("Unused"));
+    }
+
+    #[test]
+    fn test_is_url_http() {
+        assert!(is_url("http://example.com/api.json"));
+    }
+
+    #[test]
+    fn test_is_url_https() {
+        assert!(is_url("https://example.com/api.json"));
+    }
+
+    #[test]
+    fn test_is_url_file_path() {
+        assert!(!is_url("./api.json"));
+        assert!(!is_url("/path/to/api.json"));
+        assert!(!is_url("C:\\path\\to\\api.json"));
+    }
+
+    #[test]
+    #[ignore] // Run with: cargo test -- --ignored
+    fn test_fetch_real_url() {
+        let result = fetch_url("https://tripletex.no/v2/openapi.json");
+        assert!(result.is_ok());
+        let content = result.unwrap();
+        assert!(content.contains("openapi"));
     }
 }
