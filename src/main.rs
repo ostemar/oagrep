@@ -218,7 +218,10 @@ fn parse_schema_ref(ref_str: &str) -> Option<&str> {
 }
 
 /// Find all schemas transitively referenced from a starting set
-fn resolve_schema_deps(schemas: &Map<String, Value>, direct_refs: HashSet<String>) -> HashSet<String> {
+fn resolve_schema_deps(
+    schemas: &Map<String, Value>,
+    direct_refs: HashSet<String>,
+) -> HashSet<String> {
     let mut resolved = HashSet::new();
     let mut queue: VecDeque<String> = direct_refs.into_iter().collect();
 
@@ -246,7 +249,10 @@ fn resolve_schema_deps(schemas: &Map<String, Value>, direct_refs: HashSet<String
 /// Remove all schemas not in the keep set
 fn prune_schemas(spec: &mut Value, keep: &HashSet<String>) {
     if let Some(components) = spec.get_mut("components").and_then(|c| c.as_object_mut()) {
-        if let Some(schemas) = components.get_mut("schemas").and_then(|s| s.as_object_mut()) {
+        if let Some(schemas) = components
+            .get_mut("schemas")
+            .and_then(|s| s.as_object_mut())
+        {
             schemas.retain(|name, _| keep.contains(name));
         }
     }
